@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+mkdir -p build
+g++ -isystem lib example.cpp -std=c++17 -o build/tmp
+./build/tmp
