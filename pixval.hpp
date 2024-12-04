@@ -10,8 +10,9 @@ namespace pixval
 {
     struct canvas
     {
-        canvas(unsigned width, unsigned height, std::string name = "pixvalContainer");
+        canvas(unsigned columns, unsigned rows, std::string name = "pixvalContainer");
         void set_value(float, unsigned x, unsigned y);
+        void set_canvas_size(std::string width, std::string height);
         std::string make_css() const;
         std::string make_html() const;
 
@@ -20,18 +21,30 @@ namespace pixval
         const unsigned m_height;
         const std::string m_name;
         std::vector<float> m_pixels;
+        std::map<std::string, std::string> m_variables;
     };
 
-    canvas::canvas(unsigned width, unsigned height, std::string name)
-    : m_width(width)
-    , m_height(height)
+    canvas::canvas(unsigned columns, unsigned rows, std::string name)
+    : m_width(columns)
+    , m_height(rows)
     , m_name(name)
     , m_pixels(m_width * m_height)
+    , m_variables( {
+        {"width", std::to_string(m_width)},
+        {"height", std::to_string(m_height)},
+        {"name", m_name },
+    })
     {}
 
     void canvas::set_value(float v, unsigned x, unsigned y)
     {
         m_pixels[x * m_width + y] = v;
+    }
+
+    void canvas::set_canvas_size(std::string canvas_width, std::string canvas_height)
+    {
+        m_variables["canvas_width"] = canvas_width;
+        m_variables["canvas_height"] = canvas_height;
     }
 
     std::string canvas::make_css() const
@@ -43,7 +56,8 @@ namespace pixval
               --width: {{width}};
               --height: {{height}};
               background-color:black;
-              height: 800px;
+              width: {{canvas_width}};
+              height: {{canvas_height}};
               display: grid;
               grid-template-columns: repeat(var(--width), 1fr);
               grid-template-rows: repeat(var(--height), 1fr);
@@ -56,52 +70,31 @@ namespace pixval
             }
         )" };
 
-        const map<string, string> variables = {
-            {"width", to_string(m_width)},
-            {"height", to_string(m_height)},
-            {"name", m_name },
-        };
-
-        return text_utils::apply_variables( temp, variables );
+        return text_utils::apply_variables( temp, m_variables );
     }
 
     std::string canvas::make_html() const
     {
         using namespace std;
-        auto pixel_temp { R"(
-            <div class="pixel" sytle="background:rgb(10, 10, 10);"></div>
-        )" };
+        auto pixel_temp { R"(<div class="pixel" style="background:rgb({{val}}, {{val}}, {{val}});"></div>)" };
 
-        const map<string, string> variables = {
+        std::stringstream pixels;
+        for (auto i = 0; i < m_width * m_height; ++i) {
+            const auto value = 255.0 * m_pixels[i];
+            pixels << text_utils::apply_variables( pixel_temp, {{"val", to_string(unsigned(round(value)))}} ) << "\n";
+        }
 
+        const map<string, string> container_variables = {
+            {"name", m_name },
+            {"pixels", pixels.str()}
         };
 
-        return text_utils::apply_variables( pixel_temp, variables );
+        auto container_temp { R"(
+            <div class="{{name}}">
+                {{pixels}}
+            </div>
+        )" };
+
+        return text_utils::apply_variables( container_temp, container_variables );
     }
 }
-
-
-/*
-
-
-
-unsigned long make_RGB(int r, int g, int b)
-{
-    return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
-}
-
-std::cout << "Output of (unsigned char)0xc0: "
-    << std::hex << std::setw(2) << std::setfill('0') << make_RGB(r, g, b) << '\n';
-  return 0;
-
--    template<class T>
--    static std::array<uint8_t, 4> get_colors(T hexColors) {
--        uint8_t red = stoi( hexColors.first.substr(1, 2), 0, 16 );
--        uint8_t green = stoi( hexColors.first.substr(3, 2), 0, 16 );
--        uint8_t blue = stoi( hexColors.first.substr(5, 2), 0, 16 );
--        uint8_t alpha = hexColors.second * 255;
--        return std::array<uint8_t, 4>({red, green, blue, alpha});
--    }
-
-
-*/
