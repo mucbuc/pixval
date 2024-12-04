@@ -10,13 +10,11 @@ using namespace pixval;
 
 int main()
 {
-    enum { width = 5,
-        height = 5 };
+    enum { width = 10,
+        height = 10 };
 
     canvas c { width, height };
     c.set_canvas_size("400px", "400px");
-    c.set_pixel_border_radius("20px");
-    c.set_pixel_gap_size("10px");
 
     const auto delta = 1.0 / (width * height - 1);
     auto value = 0.0;

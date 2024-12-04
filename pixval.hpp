@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -10,6 +11,7 @@ namespace pixval {
 struct canvas {
     canvas(unsigned columns, unsigned rows, std::string name = "pixvalContainer");
     void set_canvas_size(std::string width, std::string height);
+    void set_canvas_border_radius(std::string);
     void set_pixel_gap_size(std::string);
     void set_pixel_border_radius(std::string);
     void set_pixel_value(float, unsigned x, unsigned y);
@@ -29,13 +31,12 @@ canvas::canvas(unsigned columns, unsigned rows, std::string name)
     , m_height(rows)
     , m_name(name)
     , m_pixels(m_width * m_height)
-    , m_variables({
-          { "width", std::to_string(m_width) },
+    , m_variables({ { "width", std::to_string(m_width) },
           { "height", std::to_string(m_height) },
           { "name", m_name },
           { "border_radius", "2px" },
           { "gap_size", "2px" },
-      })
+          { "canvas_border_radius", "2px" } })
 {
 }
 
@@ -43,6 +44,11 @@ void canvas::set_canvas_size(std::string canvas_width, std::string canvas_height
 {
     m_variables["canvas_width"] = canvas_width;
     m_variables["canvas_height"] = canvas_height;
+}
+
+void canvas::set_canvas_border_radius(std::string value)
+{
+    m_variables["canvas_border_radius"] = value;
 }
 
 void canvas::set_pixel_gap_size(std::string gap_size)
@@ -77,6 +83,7 @@ std::string canvas::make_css() const
               grid-template-rows: repeat({{height}}, 1fr);
               gap: {{gap_size}};
               padding: {{gap_size}};
+              border-radius: {{canvas_border_radius}};
             }
             .pixel
             {
