@@ -13,6 +13,8 @@ namespace pixval
         canvas(unsigned columns, unsigned rows, std::string name = "pixvalContainer");
         void set_value(float, unsigned x, unsigned y);
         void set_canvas_size(std::string width, std::string height);
+        void set_gap_size(std::string);
+        void set_border_radius(std::string);
         std::string make_css() const;
         std::string make_html() const;
 
@@ -33,6 +35,8 @@ namespace pixval
         {"width", std::to_string(m_width)},
         {"height", std::to_string(m_height)},
         {"name", m_name },
+        {"border_radius", "2px"},
+        {"gap_size", "2px" },
     })
     {}
 
@@ -47,26 +51,35 @@ namespace pixval
         m_variables["canvas_height"] = canvas_height;
     }
 
+    void canvas::set_gap_size(std::string gap_size)
+    {
+        m_variables["gap_size"] = gap_size;
+
+    }
+
+    void canvas::set_border_radius(std::string border_radius)
+    {
+        m_variables["border_radius"] = border_radius;
+    }
+
     std::string canvas::make_css() const
     {
         using namespace std;
         const string temp { R"(
             .{{name}}
             {
-              --width: {{width}};
-              --height: {{height}};
               background-color:black;
               width: {{canvas_width}};
               height: {{canvas_height}};
               display: grid;
-              grid-template-columns: repeat(var(--width), 1fr);
-              grid-template-rows: repeat(var(--height), 1fr);
-              gap: 2px;
-              padding: 2px;
+              grid-template-columns: repeat({{width}}, 1fr);
+              grid-template-rows: repeat({{height}}, 1fr);
+              gap: {{gap_size}};
+              padding: {{gap_size}};
             }
             .pixel
             {
-              border-radius: 2px;
+              border-radius: {{border_radius}};
             }
         )" };
 

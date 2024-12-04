@@ -7,10 +7,12 @@ using namespace pixval;
 
 int main()
 {
-    enum { width = 25, height = 25 };
+    enum { width = 5, height = 5 };
 
     canvas c { width, height };
     c.set_canvas_size("400px", "400px");
+    c.set_border_radius("20px");
+    c.set_gap_size("10px");
 
     const auto delta = 1.0 / (width * height - 1);
     auto value = 0.0;
