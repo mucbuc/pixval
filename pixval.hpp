@@ -9,10 +9,10 @@
 namespace pixval {
 struct canvas {
     canvas(unsigned columns, unsigned rows, std::string name = "pixvalContainer");
-    void set_value(float, unsigned x, unsigned y);
     void set_canvas_size(std::string width, std::string height);
-    void set_gap_size(std::string);
-    void set_border_radius(std::string);
+    void set_pixel_gap_size(std::string);
+    void set_pixel_border_radius(std::string);
+    void set_pixel_value(float, unsigned x, unsigned y);
     std::string make_css() const;
     std::string make_html() const;
 
@@ -39,28 +39,28 @@ canvas::canvas(unsigned columns, unsigned rows, std::string name)
 {
 }
 
-void canvas::set_value(float v, unsigned x, unsigned y)
-{
-    ASSERT(x < m_width);
-    ASSERT(y < m_height);
-
-    m_pixels[x * m_width + y] = v;
-}
-
 void canvas::set_canvas_size(std::string canvas_width, std::string canvas_height)
 {
     m_variables["canvas_width"] = canvas_width;
     m_variables["canvas_height"] = canvas_height;
 }
 
-void canvas::set_gap_size(std::string gap_size)
+void canvas::set_pixel_gap_size(std::string gap_size)
 {
     m_variables["gap_size"] = gap_size;
 }
 
-void canvas::set_border_radius(std::string border_radius)
+void canvas::set_pixel_border_radius(std::string border_radius)
 {
     m_variables["border_radius"] = border_radius;
+}
+
+void canvas::set_pixel_value(float v, unsigned x, unsigned y)
+{
+    ASSERT(x < m_width);
+    ASSERT(y < m_height);
+
+    m_pixels[x * m_width + y] = v;
 }
 
 std::string canvas::make_css() const

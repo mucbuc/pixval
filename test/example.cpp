@@ -15,15 +15,15 @@ int main()
 
     canvas c { width, height };
     c.set_canvas_size("400px", "400px");
-    c.set_border_radius("20px");
-    c.set_gap_size("10px");
+    c.set_pixel_border_radius("20px");
+    c.set_pixel_gap_size("10px");
 
     const auto delta = 1.0 / (width * height - 1);
     auto value = 0.0;
 
     for (auto i = 0; i < width; ++i) {
         for (auto j = 0; j < height; ++j) {
-            c.set_value(value, i, j);
+            c.set_pixel_value(value, i, j);
             value += delta;
         }
     }
