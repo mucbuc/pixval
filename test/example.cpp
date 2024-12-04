@@ -1,3 +1,6 @@
+#include <cassert>
+#define ASSERT(p) assert((p))
+
 #include <pixval/pixval.hpp>
 
 #include <iostream>
@@ -7,7 +10,8 @@ using namespace pixval;
 
 int main()
 {
-    enum { width = 5, height = 5 };
+    enum { width = 5,
+        height = 5 };
 
     canvas c { width, height };
     c.set_canvas_size("400px", "400px");
