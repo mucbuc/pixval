@@ -19,7 +19,7 @@ struct canvas {
     properties_type pixel_properties() const;
 
     void set_pixel_value(float, unsigned x, unsigned y);
-    void set_pixel_values(float *);
+    void set_pixel_values(float*);
     std::string make_css() const;
     std::string make_html() const;
 
@@ -50,6 +50,16 @@ canvas::canvas(unsigned columns, unsigned rows, std::string name)
     , m_canvas_properties()
     , m_pixel_properties()
 {
+    m_canvas_properties.insert({
+        { "display", "grid" },
+        { "background-color", "black" },
+        { "grid-template-columns", "repeat(" + std::to_string(columns) + ", 1fr)" },
+        { "grid-template-rows", "repeat(" + std::to_string(rows) + ", 1fr)" },
+        { "gap", "2px" },
+        { "padding", "2px" },
+    });
+
+    m_pixel_properties.insert({ { "border-radius", "2px" } });
 }
 
 auto canvas::canvas_properties() -> properties_type&
@@ -80,9 +90,9 @@ void canvas::set_pixel_value(float v, unsigned x, unsigned y)
     m_pixels[x * m_width + y] = v;
 }
 
-void canvas::set_pixel_values(float * p)
+void canvas::set_pixel_values(float* p)
 {
-    for (auto & i : m_pixels) {
+    for (auto& i : m_pixels) {
         i = *p;
         ++p;
     }

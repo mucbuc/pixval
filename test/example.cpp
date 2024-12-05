@@ -17,15 +17,7 @@ int main()
     c.canvas_properties().insert({
         { "width", "400px" },
         { "height", "400px" },
-        { "display", "grid" },
-        { "background-color", "black" },
-        { "grid-template-columns", "repeat(" + to_string(columns) + ", 1fr)" },
-        { "grid-template-rows", "repeat(" + to_string(rows) + ", 1fr)" },
-        { "gap", "2px" },
-        { "padding", "2px" },
     });
-
-    c.pixel_properties().insert({ { "border-radius", "2px" } });
 
     const auto delta = 1.0 / (rows * columns - 1);
     auto value = 0.0;
@@ -36,14 +28,11 @@ int main()
         }
     }
 
-    cout << "<!DOCTYPE html><html>" << endl;
-    cout << "<header><style>" << endl;
+    cout << "<!DOCTYPE html><html><header><style>" << endl;
     cout << c.make_css() << endl;
-    cout << "</style></header>" << endl;
-    cout << "<body>" << endl;
+    cout << "</style></header><body>" << endl;
     cout << c.make_html() << endl;
-    cout << "</body>" << endl;
-    cout << "</html>" << endl;
+    cout << "</body></html>" << endl;
 
     return 0;
 }
