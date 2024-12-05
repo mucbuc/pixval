@@ -31,7 +31,7 @@ see `test/build_and_run`
 see `test/example.cpp`
 
 ## Result
-see ![result](./result.png)
+![result](./result.png)
 
 ## Dependencies
 - clone [text_utils](https://github.com/mucbuc/text_utils.git) into lib folder (see test folder)
