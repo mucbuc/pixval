@@ -9,21 +9,36 @@
 
 namespace pixval {
 struct canvas {
-    canvas(unsigned columns, unsigned rows, std::string name = "pixvalContainer");
-    void set_canvas_size(std::string width, std::string height);
-    void set_canvas_border_radius(std::string);
-    void set_pixel_gap_size(std::string);
-    void set_pixel_border_radius(std::string);
+    using properties_type = std::map<std::string, std::string>;
+
+    canvas(unsigned columns, unsigned rows, std::string name);
+
+    properties_type& canvas_properties();
+    properties_type canvas_properties() const;
+    properties_type& pixel_properties();
+    properties_type pixel_properties() const;
+
     void set_pixel_value(float, unsigned x, unsigned y);
     std::string make_css() const;
     std::string make_html() const;
 
 private:
+    static std::string make_properties_string(const properties_type& properties)
+    {
+        std::stringstream result;
+        for (auto property : properties) {
+            result << property.first << ": " << property.second << ";"
+                   << "\n";
+        }
+        return result.str();
+    }
+
     const unsigned m_width;
     const unsigned m_height;
-    const std::string m_name;
+    std::string m_name;
+    properties_type m_canvas_properties;
+    properties_type m_pixel_properties;
     std::vector<float> m_pixels;
-    std::map<std::string, std::string> m_variables;
 };
 
 canvas::canvas(unsigned columns, unsigned rows, std::string name)
@@ -31,34 +46,29 @@ canvas::canvas(unsigned columns, unsigned rows, std::string name)
     , m_height(rows)
     , m_name(name)
     , m_pixels(m_width * m_height)
-    , m_variables({ { "width", std::to_string(m_width) },
-          { "height", std::to_string(m_height) },
-          { "name", m_name },
-          { "border_radius", "2px" },
-          { "gap_size", "2px" },
-          { "canvas_border_radius", "2px" } })
+    , m_canvas_properties()
+    , m_pixel_properties()
 {
 }
 
-void canvas::set_canvas_size(std::string canvas_width, std::string canvas_height)
+auto canvas::canvas_properties() -> properties_type&
 {
-    m_variables["canvas_width"] = canvas_width;
-    m_variables["canvas_height"] = canvas_height;
+    return m_canvas_properties;
 }
 
-void canvas::set_canvas_border_radius(std::string value)
+auto canvas::canvas_properties() const -> properties_type
 {
-    m_variables["canvas_border_radius"] = value;
+    return m_canvas_properties;
 }
 
-void canvas::set_pixel_gap_size(std::string gap_size)
+auto canvas::pixel_properties() -> properties_type&
 {
-    m_variables["gap_size"] = gap_size;
+    return m_pixel_properties;
 }
 
-void canvas::set_pixel_border_radius(std::string border_radius)
+auto canvas::pixel_properties() const -> properties_type
 {
-    m_variables["border_radius"] = border_radius;
+    return m_pixel_properties;
 }
 
 void canvas::set_pixel_value(float v, unsigned x, unsigned y)
@@ -72,26 +82,25 @@ void canvas::set_pixel_value(float v, unsigned x, unsigned y)
 std::string canvas::make_css() const
 {
     using namespace std;
+
     const string temp { R"(
             .{{name}}
             {
-              background-color:black;
-              width: {{canvas_width}};
-              height: {{canvas_height}};
-              display: grid;
-              grid-template-columns: repeat({{width}}, 1fr);
-              grid-template-rows: repeat({{height}}, 1fr);
-              gap: {{gap_size}};
-              padding: {{gap_size}};
-              border-radius: {{canvas_border_radius}};
+              {{canvas_properties}}
             }
             .pixel
             {
-              border-radius: {{border_radius}};
+              {{pixel_properties}}
             }
         )" };
 
-    return text_utils::apply_variables(temp, m_variables);
+    properties_type variables = {
+        { "name", m_name },
+        { "canvas_properties", make_properties_string(m_canvas_properties) },
+        { "pixel_properties", make_properties_string(m_pixel_properties) }
+    };
+
+    return text_utils::apply_variables(temp, variables);
 }
 
 std::string canvas::make_html() const
