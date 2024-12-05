@@ -125,12 +125,15 @@ std::string canvas::make_css() const
 std::string canvas::make_html() const
 {
     using namespace std;
-    auto pixel_temp { R"(<div class="pixel" style="background:rgb({{val}}, {{val}}, {{val}});"></div>)" };
+    auto pixel_temp { R"(<div class="pixel" id="index_{{index}}" style="background:rgb({{val}}, {{val}}, {{val}});"></div>)" };
 
     std::stringstream pixels;
     for (auto i = 0; i < m_width * m_height; ++i) {
         const auto value = 255.0 * m_pixels[i];
-        pixels << text_utils::apply_variables(pixel_temp, { { "val", to_string(unsigned(round(value))) } }) << "\n";
+        pixels << text_utils::apply_variables(pixel_temp, {
+            { "val", to_string(unsigned(round(value))) },
+            { "index", to_string(i) },
+        }) << "\n";
     }
 
     const map<string, string> container_variables = {
