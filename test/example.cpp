@@ -36,6 +36,9 @@ int main()
         }
     }
 
+    std::vector<float> temp(rows * columns, 0.5);
+    c.set_pixel_values(temp.data());
+
     cout << "<!DOCTYPE html><html>" << endl;
     cout << "<header><style>" << endl;
     cout << c.make_css() << endl;

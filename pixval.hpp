@@ -19,6 +19,7 @@ struct canvas {
     properties_type pixel_properties() const;
 
     void set_pixel_value(float, unsigned x, unsigned y);
+    void set_pixel_values(float *);
     std::string make_css() const;
     std::string make_html() const;
 
@@ -77,6 +78,14 @@ void canvas::set_pixel_value(float v, unsigned x, unsigned y)
     ASSERT(y < m_height);
 
     m_pixels[x * m_width + y] = v;
+}
+
+void canvas::set_pixel_values(float * p)
+{
+    for (auto & i : m_pixels) {
+        i = *p;
+        ++p;
+    }
 }
 
 std::string canvas::make_css() const
