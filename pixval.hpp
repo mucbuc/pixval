@@ -87,10 +87,10 @@ std::string canvas::make_css() const
             .{{name}}
             {
               {{canvas_properties}}
-            }
-            .pixel
-            {
-              {{pixel_properties}}
+                .pixel
+                {
+                {{pixel_properties}}
+                }
             }
         )" };
 
