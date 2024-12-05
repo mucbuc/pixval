@@ -1,7 +1,7 @@
 # pixval
 visualize gridular type values
 
-##interface
+## interface
 ```
 namespace pixval {
 struct canvas {
@@ -34,4 +34,4 @@ see `test/example.cpp`
 see ![result](./result.png)
 
 ## Dependencies
-- clone [text_utils](https://github.com/mucbuc/text_utils.git) into lib folder (see test)
+- clone [text_utils](https://github.com/mucbuc/text_utils.git) into lib folder (see test folder)
