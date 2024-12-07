@@ -21,7 +21,7 @@ struct canvas {
     void set_pixel_value(float, unsigned x, unsigned y);
     void set_pixel_values(float*);
     std::string make_css() const;
-    std::string make_html() const;
+    std::string make_html(std::string inject = "") const;
 
 private:
     static std::string make_properties_string(const properties_type& properties)
@@ -59,7 +59,9 @@ canvas::canvas(unsigned columns, unsigned rows, std::string name)
         { "padding", "2px" },
     });
 
-    m_pixel_properties.insert({ { "border-radius", "2px" } });
+    m_pixel_properties.insert({
+        { "border-radius", "2px" },
+    });
 }
 
 auto canvas::canvas_properties() -> properties_type&
@@ -122,7 +124,7 @@ std::string canvas::make_css() const
     return text_utils::apply_variables(temp, variables);
 }
 
-std::string canvas::make_html() const
+std::string canvas::make_html(std::string inject) const
 {
     using namespace std;
     auto pixel_temp { R"(<div class="pixel" id="index_{{index}}" style="background:rgb({{val}}, {{val}}, {{val}});"></div>)" };
@@ -138,12 +140,14 @@ std::string canvas::make_html() const
 
     const map<string, string> container_variables = {
         { "name", m_name },
-        { "pixels", pixels.str() }
+        { "pixels", pixels.str() },
+        { "injection", inject },
     };
 
     auto container_temp { R"(
             <div class="{{name}}">
                 {{pixels}}
+                {{injection}}
             </div>
         )" };
 
